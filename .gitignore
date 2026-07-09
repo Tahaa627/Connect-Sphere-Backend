@@ -21,3 +21,10 @@ static_root/
 .DS_Store
 .vscode/
 .idea/
+
+.env
+.venv/
+__pycache__/
+*.pyc
+db.sqlite3
+media/
