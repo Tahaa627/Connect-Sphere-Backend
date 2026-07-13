@@ -19,7 +19,7 @@ class RegisterView(APIView):
             status=status.HTTP_201_CREATED,
         )        
 # Create your views here.
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
 class LoginView(APIView):
@@ -33,4 +33,21 @@ class LoginView(APIView):
         return Response(
             serializer.validated_data,
             status=status.HTTP_200_OK
+        )
+    
+from .serializers import LogoutSerializer
+ 
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = LogoutSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Logged out successfully."
+            },
+            status=status.HTTP_200_OK,
         )

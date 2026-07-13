@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "rest_framework",
     'apps.accounts',
     "apps.profiles",
+    'rest_framework_simplejwt.token_blacklist',
      
 ]
 
@@ -53,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'config.urls'
