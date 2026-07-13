@@ -4,10 +4,14 @@ from django.db import models
 
 class User(AbstractUser):
     """
-    Custom user model for Sphere Connect.
-
-    We inherit from AbstractUser so we keep Django's built-in
-    authentication features while allowing future customization.
+    Custom User model for Sphere Connect.
+    Users authenticate using their email address.
     """
 
-    pass
+    email = models.EmailField(unique=True)
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
+
+    def __str__(self):
+        return self.email

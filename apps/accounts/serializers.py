@@ -71,3 +71,17 @@ class LoginSerializer(serializers.Serializer):
             "refresh": str(refresh),
             "access": str(refresh.access_token),
         }
+    
+class UserSerializer(serializers.ModelSerializer):
+    """
+    Serializer used to return user information.
+    Never expose passwords.
+    """
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "username",
+            "email",
+        )
