@@ -97,3 +97,38 @@ class LogoutSerializer(serializers.Serializer):
         token = RefreshToken(refresh_token)
         token.blacklist()
 
+from django.contrib.auth.password_validation import validate_password
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        user = self.context["request"].user
+
+        # Check old password
+        if not user.check_password(attrs["old_password"]):
+            raise serializers.ValidationError({
+                "old_password": "Old password is incorrect."
+            })
+
+        # Check new passwords match
+        if attrs["new_password"] != attrs["confirm_password"]:
+            raise serializers.ValidationError({
+                "confirm_password": "Passwords do not match."
+            })
+
+        # Validate password strength
+        validate_password(attrs["new_password"], user)
+
+        return attrs
+
+    def save(self):
+        user = self.context["request"].user
+
+        user.set_password(self.validated_data["new_password"])
+        user.save()
+
+        return user
