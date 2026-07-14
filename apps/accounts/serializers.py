@@ -96,3 +96,4 @@ class LogoutSerializer(serializers.Serializer):
 
         token = RefreshToken(refresh_token)
         token.blacklist()
+
