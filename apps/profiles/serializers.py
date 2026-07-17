@@ -19,3 +19,19 @@ class ProfileSerializer(serializers.ModelSerializer):
             "cover_photo",
             "is_private",
         )
+
+class AvatarSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Profile
+        fields = (
+            "avatar",
+        )
+
+class CoverSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Profile
+        fields = (
+            "cover_photo",
+        )

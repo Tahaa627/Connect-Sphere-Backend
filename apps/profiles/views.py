@@ -18,7 +18,7 @@ class MyProfileView(APIView):
         return Response(serializer.data)
     
 from rest_framework import status
-from .serializers import ProfileSerializer
+from .serializers import AvatarSerializer, CoverSerializer, ProfileSerializer
 
 class UpdateProfileView(APIView):
     """
@@ -45,4 +45,51 @@ class UpdateProfileView(APIView):
                 "profile": serializer.data,
             },
             status=status.HTTP_200_OK,
+        )
+    
+class UploadAvatarView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request):
+
+        serializer = AvatarSerializer(
+            request.user.profile,
+            data=request.data,
+            partial=True,
+        )
+
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Avatar updated successfully.",
+                "avatar": serializer.data,
+            }
+        )
+
+   
+class UploadCoverView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request):
+
+        serializer = CoverSerializer(
+            request.user.profile,
+            data=request.data,
+            partial=True,
+        )
+
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+
+        return Response(
+            {
+                "message": "Cover photo updated successfully.",
+                "cover_photo": serializer.data,
+            }
         )
