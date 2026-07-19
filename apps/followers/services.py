@@ -91,3 +91,28 @@ def unfollow_user(follower, username):
         "message": f"You have unfollowed {following.username}.",
         "status": 200,
     }
+
+def get_followers(username):
+    """
+    Return all followers of a user.
+    """
+
+    try:
+        user = User.objects.get(username=username)
+
+    except User.DoesNotExist:
+        return {
+            "success": False,
+            "message": "User does not exist.",
+            "status": 404,
+        }
+
+    followers = User.objects.filter(
+        following__following=user
+    ).select_related("profile")
+
+    return {
+        "success": True,
+        "followers": followers,
+        "status": 200,
+    }
