@@ -38,3 +38,34 @@ class FollowUserView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
+
+from .services import follow_user, unfollow_user
+
+class UnfollowUserView(APIView):
+    """
+    Unfollow another user.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, username):
+
+        result = unfollow_user(
+            follower=request.user,
+            username=username,
+        )
+
+        if not result["success"]:
+            return Response(
+                {
+                    "message": result["message"]
+                },
+                status=result["status"],
+            )
+
+        return Response(
+            {
+                "message": result["message"]
+            },
+            status=status.HTTP_200_OK,
+        )
