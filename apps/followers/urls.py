@@ -4,6 +4,7 @@ from .views import (
     FollowUserView,
     FollowersListView,
     FollowingListView,
+    ProfileStatsView,
     UnfollowUserView,
 )
 
@@ -27,6 +28,10 @@ urlpatterns = [
     path(
     "<str:username>/following/",
     FollowingListView.as_view(),
-    name="following-list",
-),
+    name="following-list",),
+    path(
+        "<str:username>/stats/",
+        ProfileStatsView.as_view(),
+        name="profile-stats",
+    ),
 ]
