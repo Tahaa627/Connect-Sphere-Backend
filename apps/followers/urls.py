@@ -3,6 +3,7 @@ from django.urls import path
 from .views import (
     FollowUserView,
     FollowersListView,
+    FollowingListView,
     UnfollowUserView,
 )
 
@@ -23,4 +24,9 @@ urlpatterns = [
         FollowersListView.as_view(),
         name="followers-list",
     ),
+    path(
+    "<str:username>/following/",
+    FollowingListView.as_view(),
+    name="following-list",
+),
 ]

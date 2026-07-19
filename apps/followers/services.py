@@ -116,3 +116,24 @@ def get_followers(username):
         "followers": followers,
         "status": 200,
     }
+def get_following(username):
+
+    try:
+        user = User.objects.get(username=username)
+
+    except User.DoesNotExist:
+        return {
+            "success": False,
+            "message": "User does not exist.",
+            "status": 404,
+        }
+
+    following = User.objects.filter(
+        followers__follower=user
+    ).select_related("profile")
+
+    return {
+        "success": True,
+        "following": following,
+        "status": 200,
+    }
