@@ -162,3 +162,21 @@ def get_profile_stats(username):
         },
         "status": 200,
     }
+
+from django.db.models import Q
+import random
+
+
+def get_friend_suggestions(user):
+
+    users = User.objects.exclude(
+        id=user.id
+    ).exclude(
+        followers__follower=user
+    )
+
+    users = list(users)
+
+    random.shuffle(users)
+
+    return users[:10]

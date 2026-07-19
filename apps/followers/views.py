@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .serializers import FollowUserSerializer, UserFollowerSerializer
-from .services import follow_user, get_followers, get_following, get_profile_stats
+from .services import follow_user, get_followers, get_following, get_friend_suggestions, get_profile_stats
 
 
 class FollowUserView(APIView):
@@ -128,3 +128,18 @@ class ProfileStatsView(APIView):
             )
 
         return Response(result["stats"])
+
+class FriendSuggestionsView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        users = get_friend_suggestions(request.user)
+
+        serializer = UserFollowerSerializer(
+            users,
+            many=True,
+        )
+
+        return Response(serializer.data)
