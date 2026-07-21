@@ -64,3 +64,18 @@ class PostImage(models.Model):
 
     def __str__(self):
         return f"Image {self.id}"
+
+class Hashtag(models.Model):
+
+    name = models.CharField(
+        max_length=100,
+        unique=True,
+    )
+
+    posts = models.ManyToManyField(
+        Post,
+        related_name="hashtags",
+    )
+
+    def __str__(self):
+        return self.name
