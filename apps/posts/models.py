@@ -1,3 +1,47 @@
+from django.conf import settings
 from django.db import models
 
-# Create your models here.
+
+class Post(models.Model):
+
+    class Visibility(models.TextChoices):
+        PUBLIC = "PUBLIC", "Public"
+        FOLLOWERS = "FOLLOWERS", "Followers"
+        PRIVATE = "PRIVATE", "Private"
+
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="posts",
+    )
+
+    content = models.TextField(
+        max_length=3000,
+        blank=True,
+    )
+
+    visibility = models.CharField(
+        max_length=20,
+        choices=Visibility.choices,
+        default=Visibility.PUBLIC,
+    )
+
+    is_edited = models.BooleanField(default=False)
+
+    is_archived = models.BooleanField(default=False)
+
+    is_pinned = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.author.username} - {self.created_at}"
