@@ -1,6 +1,9 @@
 from django.urls import path
 
-from .views import CreateCommentView
+from .views import (
+    CreateCommentView,
+    PostCommentsView,
+)
 
 urlpatterns = [
 
@@ -10,4 +13,9 @@ urlpatterns = [
         name="create-comment",
     ),
 
+    path(
+        "post/<int:post_id>/",
+        PostCommentsView.as_view(),
+        name="post-comments",
+    ),
 ]

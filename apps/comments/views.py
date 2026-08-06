@@ -39,3 +39,25 @@ class CreateCommentView(APIView):
             serializer.data,
             status=status.HTTP_201_CREATED,
         )
+
+from rest_framework.generics import ListAPIView
+
+from .selectors import get_post_comments
+from .serializers import CommentSerializer
+from apps.core.pagination import DefaultPagination
+
+class PostCommentsView(ListAPIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    serializer_class = CommentSerializer
+
+    pagination_class = DefaultPagination
+
+    def get_queryset(self):
+
+        post_id = self.kwargs["post_id"]
+
+        return get_post_comments(post_id)
