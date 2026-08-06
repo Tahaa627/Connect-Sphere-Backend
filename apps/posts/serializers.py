@@ -24,6 +24,7 @@ class PostSerializer(serializers.ModelSerializer):
         source="author.username",
         read_only=True,
     )
+    comment_count = serializers.SerializerMethodField()
 
     hashtags = serializers.SerializerMethodField()
 
@@ -52,3 +53,6 @@ class PostSerializer(serializers.ModelSerializer):
             mention.user.username
             for mention in obj.mentions.all()
         ]
+    
+    def get_comment_count(self, obj):
+        return obj.comments.count()
