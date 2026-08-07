@@ -25,6 +25,8 @@ urlpatterns = [
     path("api/profiles/", include("apps.profiles.urls")),
     path("api/posts/",include("apps.posts.urls"),),
     path("api/comments/",include("apps.comments.urls"),
+    path("api/likes/",include("apps.likes.urls"),
+),
 ),
 ]
 if settings.DEBUG:
