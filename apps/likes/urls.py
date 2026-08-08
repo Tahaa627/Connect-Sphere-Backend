@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import ToggleLikeView
+from .views import PostLikesView, ToggleLikeView
 
 urlpatterns = [
 
@@ -8,6 +8,11 @@ urlpatterns = [
         "toggle/",
         ToggleLikeView.as_view(),
         name="toggle-like",
+    ),
+    path(
+        "post/<int:post_id>/",
+        PostLikesView.as_view(),
+        name="post-likes",
     ),
 
 ]
