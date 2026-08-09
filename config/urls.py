@@ -24,10 +24,10 @@ urlpatterns = [
     path("api/auth/",include("apps.accounts.urls"),),
     path("api/profiles/", include("apps.profiles.urls")),
     path("api/posts/",include("apps.posts.urls"),),
-    path("api/comments/",include("apps.comments.urls"),
-    path("api/likes/",include("apps.likes.urls"),
-),
-),
+    path("api/comments/",include("apps.comments.urls")),
+    path("api/likes/",include("apps.likes.urls")),
+    
+
 ]
 if settings.DEBUG:
     urlpatterns += static(
