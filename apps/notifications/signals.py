@@ -1,3 +1,5 @@
+from xml.etree.ElementTree import Comment
+
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -31,4 +33,17 @@ def follow_notification(sender, instance, created, **kwargs):
         sender=instance.follower,
         notification_type=Notification.NotificationType.FOLLOW,
         message=f"{instance.follower.username} started following you.",
+    )
+
+@receiver(post_save, sender=Comment)
+def comment_notification(sender, instance, created, **kwargs):
+
+    if not created:
+        return
+
+    create_notification(
+        recipient=instance.post.author,
+        sender=instance.author,
+        notification_type=Notification.NotificationType.COMMENT,
+        message=f"{instance.author.username} commented on your post.",
     )
