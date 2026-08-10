@@ -9,6 +9,12 @@ from .services import create_notification
 
 from apps.followers.models import Follow
 
+from django.contrib.auth import get_user_model
+
+from .utils import extract_mentions
+
+User = get_user_model()
+
 @receiver(post_save, sender=Like)
 def like_notification(sender, instance, created, **kwargs):
 
@@ -47,3 +53,34 @@ def comment_notification(sender, instance, created, **kwargs):
         notification_type=Notification.NotificationType.COMMENT,
         message=f"{instance.author.username} commented on your post.",
     )
+
+@receiver(post_save, sender=Comment)
+def mention_notification(sender, instance, created, **kwargs):
+
+    if not created:
+        return
+
+    usernames = extract_mentions(
+        instance.content
+    )
+
+    for username in usernames:
+
+        try:
+
+            user = User.objects.get(
+            username=username
+            )
+
+            if user == instance.author:
+                continue
+
+            create_notification(
+                recipient=user,
+                sender=instance.author,
+                notification_type=Notification.NotificationType.MENTION,
+                message=f"{instance.author.username} mentioned you in a comment.",
+        )
+
+        except User.DoesNotExist:
+            continue
