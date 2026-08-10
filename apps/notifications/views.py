@@ -6,6 +6,13 @@ from apps.core.pagination import DefaultPagination
 from .selectors import get_user_notifications
 from .serializers import NotificationSerializer
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from .selectors import (get_user_notifications,get_notification,)
+
+from .services import (mark_notification_as_read,mark_all_notifications_as_read,)
 
 class NotificationListView(ListAPIView):
 
@@ -20,4 +27,24 @@ class NotificationListView(ListAPIView):
     def get_queryset(self):
         return get_user_notifications(
             self.request.user
+        )
+
+class MarkNotificationReadView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, notification_id):
+
+        notification = get_notification(
+            notification_id,
+            request.user,
+        )
+
+        mark_notification_as_read(notification)
+
+        return Response(
+            {
+                "message": "Notification marked as read."
+            },
+            status=status.HTTP_200_OK,
         )
