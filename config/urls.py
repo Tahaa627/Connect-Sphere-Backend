@@ -26,7 +26,8 @@ urlpatterns = [
     path("api/posts/",include("apps.posts.urls"),),
     path("api/comments/",include("apps.comments.urls")),
     path("api/likes/",include("apps.likes.urls")),
-    
+    path("api/followers/",include("apps.followers.urls")),
+    path("api/notifications/",include("apps.notifications.urls")),
 
 ]
 if settings.DEBUG:
