@@ -27,3 +27,33 @@ class Conversation(models.Model):
 
     def __str__(self):
         return f"Conversation {self.id}"
+
+class ConversationParticipant(models.Model):
+    """
+    Stores users participating in a conversation.
+    """
+
+    conversation = models.ForeignKey(
+        Conversation,
+        on_delete=models.CASCADE,
+        related_name="conversation_participants",
+    )
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="conversation_participants",
+    )
+
+    joined_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    class Meta:
+        unique_together = (
+            "conversation",
+            "user",
+        )
+
+    def __str__(self):
+        return f"{self.user.username} - {self.conversation.id}"
