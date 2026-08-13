@@ -15,6 +15,11 @@ from apps.core.pagination import DefaultPagination
 from .selectors import get_user_conversations
 from .serializers import ConversationSerializer
 
+from .selectors import get_conversation
+from .services import send_message
+from .serializers import SendMessageSerializer
+from .permissions import IsConversationParticipant
+
 class StartConversationView(APIView):
 
     permission_classes = [
@@ -61,4 +66,55 @@ class ConversationListView(ListAPIView):
 
         return get_user_conversations(
             self.request.user
+        )
+
+class SendMessageView(APIView):
+
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    def post(self, request):
+
+        serializer = SendMessageSerializer(
+            data=request.data
+        )
+
+        serializer.is_valid(
+            raise_exception=True
+        )
+
+        conversation = get_conversation(
+            serializer.validated_data["conversation"].id
+        )
+
+        permission = IsConversationParticipant()
+
+        if not permission.has_object_permission(
+            request,
+            self,
+            conversation,
+        ):
+            return Response(
+                {
+                    "detail": "You are not a participant of this conversation."
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        message = send_message(
+            sender=request.user,
+            conversation=conversation,
+            content=serializer.validated_data["content"],
+        )
+
+        return Response(
+            {
+                "id": message.id,
+                "conversation": conversation.id,
+                "sender": request.user.username,
+                "content": message.content,
+                "created_at": message.created_at,
+            },
+            status=status.HTTP_201_CREATED,
         )

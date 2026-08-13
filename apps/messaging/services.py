@@ -41,3 +41,18 @@ def get_or_create_conversation(user1, user2):
     ])
 
     return conversation
+
+from django.shortcuts import get_object_or_404
+
+from .models import Conversation
+
+
+def get_conversation(conversation_id):
+    """
+    Return a conversation by its ID.
+    """
+
+    return get_object_or_404(
+        Conversation,
+        id=conversation_id,
+    )

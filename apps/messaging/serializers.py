@@ -66,3 +66,13 @@ class ConversationSerializer(serializers.ModelSerializer):
             if message
             else None
         )
+
+class SendMessageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Message
+
+        fields = (
+            "conversation",
+            "content",
+        )

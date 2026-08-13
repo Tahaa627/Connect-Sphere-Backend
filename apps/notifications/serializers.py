@@ -1,3 +1,5 @@
+from .models import Message
+
 from rest_framework import serializers
 
 from .models import Notification
@@ -22,3 +24,6 @@ class NotificationSerializer(serializers.ModelSerializer):
             "is_read",
             "created_at",
         )
+
+
+
