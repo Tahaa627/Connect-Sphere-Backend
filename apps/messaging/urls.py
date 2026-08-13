@@ -1,6 +1,8 @@
-from django.urls import path
-
-from .views import StartConversationView
+from django.urls import path 
+from .views import (
+    StartConversationView,
+    ConversationListView,
+)
 
 urlpatterns = [
 
@@ -10,4 +12,9 @@ urlpatterns = [
         name="start-conversation",
     ),
 
+    path(
+        "conversations/list/",
+        ConversationListView.as_view(),
+        name="conversation-list",
+    ),
 ]

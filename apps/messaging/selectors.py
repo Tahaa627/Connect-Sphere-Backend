@@ -1,6 +1,9 @@
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 
+from django.db.models import Count, Max
+from .models import Conversation
+
 User = get_user_model()
 
 
@@ -12,4 +15,25 @@ def get_user(user_id):
     return get_object_or_404(
         User,
         id=user_id,
+    )
+
+
+
+def get_user_conversations(user):
+    """
+    Return all conversations for a user ordered
+    by most recent activity.
+    """
+
+    return (
+        Conversation.objects
+        .filter(participants=user)
+        .prefetch_related(
+            "participants",
+            "messages",
+        )
+        .annotate(
+            last_activity=Max("messages__created_at"),
+        )
+        .order_by("-last_activity")
     )

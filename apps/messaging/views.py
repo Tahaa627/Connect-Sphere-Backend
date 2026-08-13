@@ -10,6 +10,10 @@ from .selectors import get_user
 from .serializers import StartConversationSerializer
 from .services import get_or_create_conversation
 
+from rest_framework.generics import ListAPIView
+from apps.core.pagination import DefaultPagination
+from .selectors import get_user_conversations
+from .serializers import ConversationSerializer
 
 class StartConversationView(APIView):
 
@@ -41,4 +45,20 @@ class StartConversationView(APIView):
                 "conversation_id": conversation.id
             },
             status=status.HTTP_201_CREATED,
+        )
+
+class ConversationListView(ListAPIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    serializer_class = ConversationSerializer
+
+    pagination_class = DefaultPagination
+
+    def get_queryset(self):
+
+        return get_user_conversations(
+            self.request.user
         )
