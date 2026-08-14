@@ -19,11 +19,9 @@ def get_user(user_id):
 
 
 
+from django.db.models import Count, Max, Q
+
 def get_user_conversations(user):
-    """
-    Return all conversations for a user ordered
-    by most recent activity.
-    """
 
     return (
         Conversation.objects
@@ -34,6 +32,14 @@ def get_user_conversations(user):
         )
         .annotate(
             last_activity=Max("messages__created_at"),
+            unread_count=Count(
+                "messages",
+                filter=Q(
+                    messages__is_read=False
+                ) & ~Q(
+                    messages__sender=user
+                )
+            ),
         )
         .order_by("-last_activity")
     )
@@ -66,4 +72,18 @@ def get_conversation_messages(conversation):
         .filter(conversation=conversation)
         .select_related("sender")
         .order_by("created_at")
+    )
+
+def get_total_unread_messages(user):
+
+    return (
+        Message.objects
+        .filter(
+            conversation__participants=user,
+            is_read=False,
+        )
+        .exclude(
+            sender=user,
+        )
+        .count()
     )

@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .selectors import get_user
+from .selectors import get_total_unread_messages, get_user
 from .serializers import MessageSerializer, StartConversationSerializer
 from .services import get_or_create_conversation
 
@@ -193,5 +193,22 @@ class MarkConversationReadView(APIView):
         return Response(
             {
                 "messages_marked_read": updated
+            }
+        )
+
+class UnreadMessageCountView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def get(self, request):
+
+        return Response(
+            {
+                "unread_messages":
+                get_total_unread_messages(
+                    request.user
+                )
             }
         )

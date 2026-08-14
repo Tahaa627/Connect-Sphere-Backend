@@ -23,14 +23,14 @@ class ConversationSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = Conversation
-
+        unread_count = serializers.IntegerField(read_only=True)
         fields = (
             "id",
             "participant",
             "last_message",
             "last_message_time",
         )
-
+        
     def get_participant(self, obj):
 
         request = self.context["request"]
