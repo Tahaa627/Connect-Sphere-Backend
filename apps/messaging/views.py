@@ -19,6 +19,16 @@ from .selectors import get_conversation
 from .services import send_message
 from .serializers import SendMessageSerializer
 from .permissions import IsConversationParticipant
+from .models import Message
+
+from rest_framework.generics import ListAPIView
+
+from apps.core.pagination import DefaultPagination
+
+from .selectors import (
+    get_conversation,
+    get_conversation_messages,
+)
 
 class StartConversationView(APIView):
 
@@ -117,4 +127,33 @@ class SendMessageView(APIView):
                 "created_at": message.created_at,
             },
             status=status.HTTP_201_CREATED,
+        )
+
+class MessageHistoryView(ListAPIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    serializer_class = MessageSerializer
+
+    pagination_class = DefaultPagination
+
+    def get_queryset(self):
+
+        conversation = get_conversation(
+            self.kwargs["conversation_id"]
+        )
+
+        permission = IsConversationParticipant()
+
+        if not permission.has_object_permission(
+            self.request,
+            self,
+            conversation,
+        ):
+            return Message.objects.none()
+
+        return get_conversation_messages(
+            conversation
         )

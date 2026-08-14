@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
-from .models import Conversation
+from .models import Conversation, Message
 
 User = get_user_model()
 
@@ -76,3 +76,26 @@ class SendMessageSerializer(serializers.ModelSerializer):
             "conversation",
             "content",
         )
+
+class MessageSerializer(serializers.ModelSerializer):
+
+    sender = serializers.SerializerMethodField()
+
+    class Meta:
+
+        model = Message
+
+        fields = (
+            "id",
+            "sender",
+            "content",
+            "is_read",
+            "created_at",
+        )
+
+    def get_sender(self, obj):
+
+        return {
+            "id": obj.sender.id,
+            "username": obj.sender.username,
+        }

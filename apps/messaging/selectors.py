@@ -52,3 +52,18 @@ def get_conversation(conversation_id):
         Conversation,
         id=conversation_id,
     )
+
+from .models import Message
+
+
+def get_conversation_messages(conversation):
+    """
+    Return all messages for a conversation.
+    """
+
+    return (
+        Message.objects
+        .filter(conversation=conversation)
+        .select_related("sender")
+        .order_by("created_at")
+    )
