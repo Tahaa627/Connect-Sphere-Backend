@@ -1,4 +1,4 @@
-from .models import Message
+
 
 from rest_framework import serializers
 

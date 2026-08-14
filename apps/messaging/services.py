@@ -3,6 +3,20 @@ from django.db import transaction
 from .models import Conversation, ConversationParticipant
 from .models import Message
 
+
+@transaction.atomic
+def send_message(*, sender, conversation, content):
+    """
+    Create and return a new message.
+    """
+
+    message = Message.objects.create(
+        conversation=conversation,
+        sender=sender,
+        content=content,
+    )
+
+    return message
 @transaction.atomic
 def get_or_create_conversation(user1, user2):
     """
