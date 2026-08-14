@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .selectors import get_user
-from .serializers import StartConversationSerializer
+from .serializers import MessageSerializer, StartConversationSerializer
 from .services import get_or_create_conversation
 
 from rest_framework.generics import ListAPIView
@@ -24,6 +24,7 @@ from .models import Message
 from rest_framework.generics import ListAPIView
 
 from apps.core.pagination import DefaultPagination
+from .services import mark_messages_as_read
 
 from .selectors import (
     get_conversation,
@@ -156,4 +157,41 @@ class MessageHistoryView(ListAPIView):
 
         return get_conversation_messages(
             conversation
+        )
+
+class MarkConversationReadView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def patch(self, request, conversation_id):
+
+        conversation = get_conversation(
+            conversation_id
+        )
+
+        permission = IsConversationParticipant()
+
+        if not permission.has_object_permission(
+            request,
+            self,
+            conversation,
+        ):
+            return Response(
+                {
+                    "detail": "Permission denied."
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        updated = mark_messages_as_read(
+            conversation,
+            request.user,
+        )
+
+        return Response(
+            {
+                "messages_marked_read": updated
+            }
         )

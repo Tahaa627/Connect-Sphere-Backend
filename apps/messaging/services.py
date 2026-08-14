@@ -1,7 +1,7 @@
 from django.db import transaction
 
 from .models import Conversation, ConversationParticipant
-
+from .models import Message
 
 @transaction.atomic
 def get_or_create_conversation(user1, user2):
@@ -55,4 +55,26 @@ def get_conversation(conversation_id):
     return get_object_or_404(
         Conversation,
         id=conversation_id,
+    )
+
+
+
+def mark_messages_as_read(conversation, user):
+    """
+    Mark all unread messages in a conversation as read,
+    excluding messages sent by the current user.
+    """
+
+    return (
+        Message.objects
+        .filter(
+            conversation=conversation,
+            is_read=False,
+        )
+        .exclude(
+            sender=user,
+        )
+        .update(
+            is_read=True,
+        )
     )
