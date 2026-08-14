@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import (
+    DeleteMessageView,
     MarkConversationReadView,
     MessageHistoryView,
     StartConversationView,
@@ -42,5 +43,10 @@ urlpatterns = [
         "unread-count/",
         UnreadMessageCountView.as_view(),
         name="unread-message-count",
+    ),
+    path(
+        "<int:message_id>/",
+        DeleteMessageView.as_view(),
+    name="delete-message",
     ),
 ]

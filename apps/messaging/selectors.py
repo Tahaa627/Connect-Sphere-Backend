@@ -87,3 +87,14 @@ def get_total_unread_messages(user):
         )
         .count()
     )
+
+
+def get_message(message_id):
+    """
+    Return a message by ID.
+    """
+
+    return get_object_or_404(
+        Message,
+        id=message_id,
+    )

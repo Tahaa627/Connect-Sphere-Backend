@@ -6,9 +6,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .selectors import get_total_unread_messages, get_user
+from .selectors import get_message, get_total_unread_messages, get_user
 from .serializers import MessageSerializer, StartConversationSerializer
-from .services import get_or_create_conversation
+from .services import delete_message, get_or_create_conversation
 
 from rest_framework.generics import ListAPIView
 from apps.core.pagination import DefaultPagination
@@ -211,4 +211,36 @@ class UnreadMessageCountView(APIView):
                     request.user
                 )
             }
+        )
+
+class DeleteMessageView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def delete(self, request, message_id):
+
+        message = get_message(
+            message_id
+        )
+
+        if message.sender != request.user:
+
+            return Response(
+                {
+                    "detail":
+                    "You can only delete your own messages."
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        delete_message(message)
+
+        return Response(
+            {
+                "message":
+                "Message deleted successfully."
+            },
+            status=status.HTTP_200_OK,
         )

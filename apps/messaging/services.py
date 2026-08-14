@@ -92,3 +92,25 @@ def mark_messages_as_read(conversation, user):
             is_read=True,
         )
     )
+
+from django.utils import timezone
+
+
+def delete_message(message):
+    """
+    Soft delete a message.
+    """
+
+    message.is_deleted = True
+    message.deleted_at = timezone.now()
+    message.content = "This message was deleted."
+
+    message.save(
+        update_fields=[
+            "is_deleted",
+            "deleted_at",
+            "content",
+        ]
+    )
+
+    return message
