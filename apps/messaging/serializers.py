@@ -80,7 +80,7 @@ class SendMessageSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
 
     sender = serializers.SerializerMethodField()
-
+    content = serializers.SerializerMethodField()
     class Meta:
 
         model = Message
@@ -92,10 +92,33 @@ class MessageSerializer(serializers.ModelSerializer):
             "is_read",
             "created_at",
         )
-
+    def get_content(self, obj):
+        if obj.is_deleted:
+            return "This message was deleted."
+        return obj.content
+    
     def get_sender(self, obj):
 
         return {
             "id": obj.sender.id,
             "username": obj.sender.username,
         }
+
+class MessageSearchSerializer(serializers.ModelSerializer):
+
+    sender = serializers.CharField(
+        source="sender.username",
+        read_only=True,
+    )
+
+    class Meta:
+
+        model = Message
+
+        fields = (
+            "id",
+            "conversation",
+            "sender",
+            "content",
+            "created_at",
+        )

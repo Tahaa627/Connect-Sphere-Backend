@@ -1,3 +1,5 @@
+from importlib.resources import path
+
 from django.shortcuts import render
 
 # Create your views here.
@@ -244,3 +246,31 @@ class DeleteMessageView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+from rest_framework.generics import ListAPIView
+
+from .selectors import search_messages
+from .serializers import MessageSearchSerializer
+
+
+class MessageSearchView(ListAPIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    serializer_class = MessageSearchSerializer
+
+    pagination_class = DefaultPagination
+
+    def get_queryset(self):
+
+        query = self.request.query_params.get(
+            "q",
+            ""
+        )
+
+        return search_messages(
+            self.request.user,
+            query,
+        )       

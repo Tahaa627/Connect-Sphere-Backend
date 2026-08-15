@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 
-from django.db.models import Count, Max
+from django.db.models import Count, Max, Q
 from .models import Conversation
 
 User = get_user_model()
@@ -16,10 +16,6 @@ def get_user(user_id):
         User,
         id=user_id,
     )
-
-
-
-from django.db.models import Count, Max, Q
 
 def get_user_conversations(user):
 
@@ -43,10 +39,6 @@ def get_user_conversations(user):
         )
         .order_by("-last_activity")
     )
-
-from django.shortcuts import get_object_or_404
-
-from .models import Conversation
 
 
 def get_conversation(conversation_id):
@@ -97,4 +89,27 @@ def get_message(message_id):
     return get_object_or_404(
         Message,
         id=message_id,
+    )
+
+def search_messages(user, query):
+    """
+    Search messages belonging to conversations
+    that the authenticated user participates in.
+    """
+
+    return (
+        Message.objects
+        .filter(
+            conversation__participants=user,
+            is_deleted=False,
+        )
+        .filter(
+            Q(content__icontains=query)
+        )
+        .select_related(
+            "sender",
+            "conversation",
+        )
+        .distinct()
+        .order_by("-created_at")
     )

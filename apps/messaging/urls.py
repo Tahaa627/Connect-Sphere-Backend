@@ -3,6 +3,7 @@ from .views import (
     DeleteMessageView,
     MarkConversationReadView,
     MessageHistoryView,
+    MessageSearchView,
     StartConversationView,
     ConversationListView,
     SendMessageView,
@@ -48,5 +49,10 @@ urlpatterns = [
         "<int:message_id>/",
         DeleteMessageView.as_view(),
     name="delete-message",
+    ),
+    path(
+            "search/",
+            MessageSearchView.as_view(),
+            name="message-search",
     ),
 ]
