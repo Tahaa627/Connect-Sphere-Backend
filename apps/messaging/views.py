@@ -118,7 +118,8 @@ class SendMessageView(APIView):
         message = send_message(
             sender=request.user,
             conversation=conversation,
-            content=serializer.validated_data["content"],
+            content=serializer.validated_data.get("content"),
+            attachment=serializer.validated_data.get("attachment"),
         )
 
         return Response(

@@ -1,22 +1,22 @@
 from django.db import transaction
-
-from .models import Conversation, ConversationParticipant
-from .models import Message
-
+from .models import Conversation, ConversationParticipant, Message
+from django.shortcuts import get_object_or_404
 
 @transaction.atomic
-def send_message(*, sender, conversation, content):
-    """
-    Create and return a new message.
-    """
-
-    message = Message.objects.create(
-        conversation=conversation,
+def send_message(
+    *,
+    sender,
+    conversation,
+    content,
+    attachment=None,
+):
+    return Message.objects.create(
         sender=sender,
+        conversation=conversation,
         content=content,
+        attachment=attachment,
     )
 
-    return message
 @transaction.atomic
 def get_or_create_conversation(user1, user2):
     """
@@ -56,9 +56,7 @@ def get_or_create_conversation(user1, user2):
 
     return conversation
 
-from django.shortcuts import get_object_or_404
 
-from .models import Conversation
 
 
 def get_conversation(conversation_id):

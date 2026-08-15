@@ -92,7 +92,11 @@ class Message(models.Model):
        null=True,
         blank=True,
     )
-
+    attachment = models.FileField(
+        upload_to="messages/",
+        null=True,
+        blank=True,
+    )
     class Meta:
         ordering = ["created_at"]
 

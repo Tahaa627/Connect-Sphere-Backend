@@ -20,15 +20,20 @@ class ConversationSerializer(serializers.ModelSerializer):
 
     last_message_time = serializers.SerializerMethodField()
 
+    unread_count = serializers.IntegerField(
+        read_only=True
+    )
+
     class Meta:
 
         model = Conversation
-        unread_count = serializers.IntegerField(read_only=True)
+
         fields = (
             "id",
             "participant",
             "last_message",
             "last_message_time",
+            "unread_count",
         )
         
     def get_participant(self, obj):
@@ -75,20 +80,34 @@ class SendMessageSerializer(serializers.ModelSerializer):
         fields = (
             "conversation",
             "content",
+            "attachment",
         )
+
+    def validate(self, attrs):
+        content = attrs.get("content")
+        attachment = attrs.get("attachment")
+
+        if not content and not attachment:
+            raise serializers.ValidationError(
+                "A message must contain text or an attachment."
+            )
+
+        return attrs
 
 class MessageSerializer(serializers.ModelSerializer):
 
     sender = serializers.SerializerMethodField()
     content = serializers.SerializerMethodField()
+    attachment = serializers.SerializerMethodField()
     class Meta:
 
         model = Message
 
         fields = (
             "id",
-            "sender",
             "content",
+            "sender",
+            "attachment",
             "is_read",
             "created_at",
         )
@@ -103,6 +122,19 @@ class MessageSerializer(serializers.ModelSerializer):
             "id": obj.sender.id,
             "username": obj.sender.username,
         }
+    def get_attachment(self, obj):
+
+        if obj.attachment:
+            request = self.context.get("request")
+
+            if request:
+                return request.build_absolute_uri(
+                    obj.attachment.url
+                )
+
+            return obj.attachment.url
+
+        return None
 
 class MessageSearchSerializer(serializers.ModelSerializer):
 
@@ -110,6 +142,8 @@ class MessageSearchSerializer(serializers.ModelSerializer):
         source="sender.username",
         read_only=True,
     )
+
+    attachment = serializers.SerializerMethodField()
 
     class Meta:
 
@@ -120,5 +154,20 @@ class MessageSearchSerializer(serializers.ModelSerializer):
             "conversation",
             "sender",
             "content",
+            "attachment",
             "created_at",
         )
+
+    def get_attachment(self, obj):
+
+        if obj.attachment:
+            request = self.context.get("request")
+
+            if request:
+                return request.build_absolute_uri(
+                    obj.attachment.url
+                )
+
+            return obj.attachment.url
+
+        return None
