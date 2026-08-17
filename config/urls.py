@@ -13,8 +13,8 @@ urlpatterns = [
     path("api/likes/",include("apps.likes.urls")),
     path("api/followers/",include("apps.followers.urls")),
     path("api/notifications/",include("apps.notifications.urls")),
-    path("api/messages/",include("apps.messaging.urls"),
-),
+    path("api/messages/",include("apps.messaging.urls")),
+    path("api/search/",include("apps.search.urls")),
 ]
 if settings.DEBUG:
     urlpatterns += static(
