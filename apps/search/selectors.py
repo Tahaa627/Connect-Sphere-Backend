@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from apps.posts.models import Post
 
 User = get_user_model()
 
@@ -18,4 +19,18 @@ def search_users(query):
             | Q(last_name__icontains=query)
         )
         .order_by("username")
+    )
+
+def search_posts(query):
+    """
+    Search posts by content.
+    """
+
+    return (
+        Post.objects
+        .select_related("author")
+        .filter(
+            Q(content__icontains=query)
+        )
+        .order_by("-created_at")
     )

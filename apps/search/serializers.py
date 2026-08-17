@@ -15,3 +15,28 @@ class UserSearchSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
         )
+
+from apps.posts.models import Post
+
+
+class PostSearchSerializer(serializers.ModelSerializer):
+
+    author = serializers.SerializerMethodField()
+
+    class Meta:
+
+        model = Post
+
+        fields = (
+            "id",
+            "author",
+            "content",
+            "created_at",
+        )
+
+    def get_author(self, obj):
+
+        return {
+            "id": obj.author.id,
+            "username": obj.author.username,
+        }

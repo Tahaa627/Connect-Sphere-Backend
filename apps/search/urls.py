@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import UserSearchView
+from .views import UserSearchView, PostSearchView
 
 urlpatterns = [
 
@@ -8,5 +8,11 @@ urlpatterns = [
         "users/",
         UserSearchView.as_view(),
         name="search-users",
+    ),
+
+    path(
+        "posts/",
+        PostSearchView.as_view(),
+        name="search-posts",
     ),
 ]
