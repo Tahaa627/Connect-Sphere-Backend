@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     "apps.comments",
     "apps.likes",
     "apps.notifications",
-    "apps.messaging"
+    "apps.messaging",
+    "apps.search",
      
 ]
 
