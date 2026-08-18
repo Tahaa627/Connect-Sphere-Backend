@@ -101,3 +101,17 @@ class PostSuggestionSerializer(serializers.ModelSerializer):
             "id",
             "content",
         )
+
+class SearchSuggestionSerializer(serializers.Serializer):
+
+    users = UserSuggestionSerializer(
+        many=True
+    )
+
+    hashtags = HashtagSuggestionSerializer(
+        many=True
+    )
+
+    posts = PostSuggestionSerializer(
+        many=True
+    )
