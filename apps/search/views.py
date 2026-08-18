@@ -1,12 +1,17 @@
 # Create your views here.
 from rest_framework.generics import ListAPIView
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from apps.core.pagination import DefaultPagination
 
-from .selectors import (get_posts_by_hashtag, get_trending_hashtags, search_users,search_posts,search_hashtags)
+from .selectors import (get_posts_by_hashtag, get_trending_hashtags,
+ search_users,search_posts,search_hashtags, get_search_suggestions,global_search)
 
-from .serializers import (UserSearchSerializer,PostSearchSerializer,HashtagSearchSerializer)
+from .serializers import (UserSearchSerializer,PostSearchSerializer,HashtagSearchSerializer,
+    SearchSuggestionSerializer,GlobalSearchSerializer)
+
 
 class UserSearchView(ListAPIView):
 
@@ -95,11 +100,8 @@ class TrendingHashtagView(ListAPIView):
 
         return get_trending_hashtags()
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
 
-from .selectors import get_search_suggestions
-from .serializers import SearchSuggestionSerializer
+
 
 
 class SearchSuggestionView(APIView):
@@ -124,3 +126,26 @@ class SearchSuggestionView(APIView):
         )
 
         return Response(serializer.data)
+
+class GlobalSearchView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def get(self, request):
+
+        query = request.query_params.get(
+            "q",
+            ""
+        )
+
+        results = global_search(query)
+
+        serializer = GlobalSearchSerializer(
+            results
+        )
+
+        return Response(
+            serializer.data
+        )

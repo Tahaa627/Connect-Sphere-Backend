@@ -115,3 +115,17 @@ class SearchSuggestionSerializer(serializers.Serializer):
     posts = PostSuggestionSerializer(
         many=True
     )
+
+class GlobalSearchSerializer(serializers.Serializer):
+
+    users = UserSearchSerializer(
+        many=True
+    )
+
+    posts = PostSearchSerializer(
+        many=True
+    )
+
+    hashtags = HashtagSearchSerializer(
+        many=True
+    )

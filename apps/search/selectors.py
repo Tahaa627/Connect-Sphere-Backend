@@ -126,3 +126,10 @@ def get_search_suggestions(query):
         "hashtags": hashtags,
         "posts": posts,
     }
+def global_search(query):
+
+    return {
+        "users": search_users(query)[:10],
+        "posts": search_posts(query)[:10],
+        "hashtags": search_hashtags(query)[:10],
+    }

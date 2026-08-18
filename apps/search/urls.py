@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import (HashtagPostsView, HashtagSearchView, UserSearchView,
+from .views import (GlobalSearchView, HashtagPostsView, HashtagSearchView, UserSearchView,
     PostSearchView, TrendingHashtagView, SearchSuggestionView)
 
 urlpatterns = [
@@ -36,5 +36,10 @@ urlpatterns = [
         "suggestions/",
         SearchSuggestionView.as_view(),
         name="search-suggestions",
+    ),
+    path(
+        "",
+        GlobalSearchView.as_view(),
+        name="global-search",
     ),
 ]
