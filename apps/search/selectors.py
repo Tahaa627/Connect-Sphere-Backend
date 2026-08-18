@@ -5,7 +5,6 @@ from django.db.models import Count
 from apps.posts.models import Hashtag
 from django.shortcuts import get_object_or_404
 
-
 User = get_user_model()
 
 
@@ -78,4 +77,25 @@ def get_posts_by_hashtag(name):
         .select_related("author")
         .prefetch_related("images")
         .order_by("-created_at")
+    )
+
+
+def get_trending_hashtags():
+    """
+    Return hashtags ordered by
+    number of associated posts.
+    """
+
+    return (
+        Hashtag.objects
+        .annotate(
+            posts_count=Count("posts")
+        )
+        .filter(
+            posts_count__gt=0
+        )
+        .order_by(
+            "-posts_count",
+            "name",
+        )
     )
