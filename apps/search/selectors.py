@@ -3,6 +3,8 @@ from django.db.models import Q
 from apps.posts.models import Post
 from django.db.models import Count
 from apps.posts.models import Hashtag
+from django.shortcuts import get_object_or_404
+
 
 User = get_user_model()
 
@@ -56,4 +58,24 @@ def search_hashtags(query):
             "-posts_count",
             "name",
         )
+    )
+
+
+
+
+def get_posts_by_hashtag(name):
+    """
+    Return all posts belonging to a hashtag.
+    """
+
+    hashtag = get_object_or_404(
+        Hashtag,
+        name=name.lower(),
+    )
+
+    return (
+        hashtag.posts
+        .select_related("author")
+        .prefetch_related("images")
+        .order_by("-created_at")
     )

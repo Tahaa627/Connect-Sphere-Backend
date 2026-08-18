@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import HashtagSearchView, UserSearchView, PostSearchView
+from .views import HashtagPostsView, HashtagSearchView, UserSearchView, PostSearchView
 
 urlpatterns = [
 
@@ -20,5 +20,10 @@ urlpatterns = [
         "hashtags/",
         HashtagSearchView.as_view(),
         name="search-hashtags",
+    ),
+    path(
+        "hashtags/<str:name>/posts/",
+        HashtagPostsView.as_view(),
+        name="hashtag-posts",
     ),
 ]

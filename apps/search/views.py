@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from apps.core.pagination import DefaultPagination
 
-from .selectors import (search_users,search_posts,search_hashtags)
+from .selectors import (get_posts_by_hashtag, search_users,search_posts,search_hashtags)
 
 from .serializers import (UserSearchSerializer,PostSearchSerializer,HashtagSearchSerializer)
 
@@ -64,3 +64,19 @@ class HashtagSearchView(ListAPIView):
         )
 
         return search_hashtags(query)
+
+class HashtagPostsView(ListAPIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    serializer_class = PostSearchSerializer
+
+    pagination_class = DefaultPagination
+
+    def get_queryset(self):
+
+        return get_posts_by_hashtag(
+            self.kwargs["name"]
+        )
