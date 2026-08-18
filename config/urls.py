@@ -15,6 +15,7 @@ urlpatterns = [
     path("api/notifications/",include("apps.notifications.urls")),
     path("api/messages/",include("apps.messaging.urls")),
     path("api/search/",include("apps.search.urls")),
+    path("api/moderation/",include("apps.moderation.urls"),),
 ]
 if settings.DEBUG:
     urlpatterns += static(
