@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "apps.notifications",
     "apps.messaging",
     "apps.search",
+    "apps.moderation",
      
 ]
 
