@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from apps.posts.models import Hashtag
+from apps.posts.models import Post
 
 User = get_user_model()
 
@@ -16,7 +18,6 @@ class UserSearchSerializer(serializers.ModelSerializer):
             "last_name",
         )
 
-from apps.posts.models import Post
 
 
 class PostSearchSerializer(serializers.ModelSerializer):
@@ -40,3 +41,20 @@ class PostSearchSerializer(serializers.ModelSerializer):
             "id": obj.author.id,
             "username": obj.author.username,
         }
+
+
+class HashtagSearchSerializer(serializers.ModelSerializer):
+
+    posts_count = serializers.IntegerField(
+        read_only=True
+    )
+
+    class Meta:
+
+        model = Hashtag
+
+        fields = (
+            "id",
+            "name",
+            "posts_count",
+        )

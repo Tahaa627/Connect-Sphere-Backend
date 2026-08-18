@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 from apps.posts.models import Post
+from django.db.models import Count
+from apps.posts.models import Hashtag
 
 User = get_user_model()
 
@@ -33,4 +35,25 @@ def search_posts(query):
             Q(content__icontains=query)
         )
         .order_by("-created_at")
+    )
+
+
+
+def search_hashtags(query):
+    """
+    Search hashtags by name.
+    """
+
+    return (
+        Hashtag.objects
+        .filter(
+            name__icontains=query
+        )
+        .annotate(
+            posts_count=Count("posts")
+        )
+        .order_by(
+            "-posts_count",
+            "name",
+        )
     )

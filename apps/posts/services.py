@@ -11,7 +11,7 @@ from .models import (
 
 User = get_user_model()
 
-
+@transaction.atomic
 def create_post(
     *,
     author,
@@ -40,8 +40,8 @@ def create_post(
 
     for tag in hashtags:
 
-        hashtag, created = Hashtag.objects.get_or_create(
-            name=tag.lower()
+        hashtag, _ = Hashtag.objects.get_or_create(
+            name=tag
         )
 
         hashtag.posts.add(post)
