@@ -99,3 +99,30 @@ def get_trending_hashtags():
             "name",
         )
     )
+
+def get_search_suggestions(query):
+
+    users = (
+        User.objects
+        .filter(username__icontains=query)
+        .order_by("username")[:5]
+    )
+
+    hashtags = (
+        Hashtag.objects
+        .filter(name__icontains=query)
+        .order_by("name")[:5]
+    )
+
+    posts = (
+        Post.objects
+        .select_related("author")
+        .filter(content__icontains=query)
+        .order_by("-created_at")[:5]
+    )
+
+    return {
+        "users": users,
+        "hashtags": hashtags,
+        "posts": posts,
+    }

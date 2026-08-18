@@ -94,3 +94,33 @@ class TrendingHashtagView(ListAPIView):
     def get_queryset(self):
 
         return get_trending_hashtags()
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from .selectors import get_search_suggestions
+from .serializers import SearchSuggestionSerializer
+
+
+class SearchSuggestionView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def get(self, request):
+
+        query = request.query_params.get(
+            "q",
+            ""
+        )
+
+        suggestions = get_search_suggestions(
+            query
+        )
+
+        serializer = SearchSuggestionSerializer(
+            suggestions
+        )
+
+        return Response(serializer.data)

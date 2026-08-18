@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import (HashtagPostsView, HashtagSearchView, UserSearchView,
-    PostSearchView, TrendingHashtagView)
+    PostSearchView, TrendingHashtagView, SearchSuggestionView)
 
 urlpatterns = [
 
@@ -31,5 +31,10 @@ urlpatterns = [
         "trending-hashtags/",
         TrendingHashtagView.as_view(),
         name="trending-hashtags",
+    ),
+    path(
+        "suggestions/",
+        SearchSuggestionView.as_view(),
+        name="search-suggestions",
     ),
 ]
